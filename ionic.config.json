@@ -1,0 +1,7 @@
+{
+  "name": "vacinakids",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

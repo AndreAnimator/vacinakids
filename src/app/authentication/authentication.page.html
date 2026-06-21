@@ -1,0 +1,27 @@
+
+<ion-content [fullscreen]="true">
+  <router-outlet></router-outlet>
+  <ion-toolbar>
+    @if(currentPage !== 'login') {
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/authentication/login"></ion-back-button>
+    </ion-buttons>
+    }
+    <ion-title>{{ pageTitle }}</ion-title>
+  </ion-toolbar>
+  <app-auth-form
+    (formSubmitted)="handleUserCredentials($event)"
+    [actionButtonText]="actionButtonText"
+    [isPasswordResetPage]="currentPage === 'reset'"
+  ></app-auth-form>
+  @if (currentPage !== 'signup') {
+  <ion-button expand="block" fill="clear" routerLink="/tabs/authentication/signup">
+    Create a new account
+  </ion-button>
+  } @if (currentPage !== 'reset') {
+  <ion-button expand="block" fill="clear" routerLink="/tabs/authentication/reset">
+    I forgot my password :(
+  </ion-button>
+  }
+</ion-content>
+
