@@ -33,7 +33,8 @@ export class AuthenticationService {
     return from(createUserWithEmailAndPassword(this.auth, email, password)).pipe(
       switchMap(async (userCredential) => {
         const user = userCredential.user;
-        
+        console.log("Quais crianças vieram com o cadastro?")
+        console.log(children)
         await this.createUserProfile(user.uid, {
           email: user.email,
           name: name,
@@ -43,6 +44,7 @@ export class AuthenticationService {
 
         if (children && children.length > 0) {
           await this.saveChildrenData(user.uid, children);
+          console.log("não ta criando criança?")
         }
 
         return userCredential;

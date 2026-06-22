@@ -86,6 +86,8 @@ export class authenticationPage {
         this.login(userCredentials);
         break;
       case 'signup':
+        console.log("O que que veio com as userCredentials?")
+        console.log(userCredentials)
         this.signup(userCredentials);
         break;
       case 'reset':
@@ -101,9 +103,11 @@ export class authenticationPage {
     .subscribe();
   }
 
-  signup({ email, password, name, sons }: UserCredentials) {
+  signup({ email, password, name, children }: UserCredentials) {
+    console.log("o que aconteceu com as crianças??")
+    console.log(children)
     this.auth
-    .signup(email, password, name, sons)
+    .signup(email, password, name, children)
     .pipe(tap(() => this.router.navigateByUrl('')))
     .subscribe();
   }
@@ -124,5 +128,5 @@ export interface UserCredentials {
   name: string;
   email: string;
   password: string;
-  sons: Child[];
+  children: Child[];
 }

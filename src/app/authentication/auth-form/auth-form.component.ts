@@ -40,6 +40,16 @@ export class AuthFormComponent{
     return this.childrenFormArray.at(index) as FormGroup;
   }
 
+  getVaccinesFormArray(childIndex: number): FormArray {
+    const childForm = this.getChildForm(childIndex);
+    return childForm.get('vaccines_taken') as FormArray;
+  }
+
+  getVaccineForm(childIndex: number, vaccineIndex: number): FormGroup {
+    const vaccinesArray = this.getVaccinesFormArray(childIndex);
+    return vaccinesArray.at(vaccineIndex) as FormGroup;
+  }
+
   nameRequired = signal(false);
 
   ngOnInit() {
@@ -81,11 +91,18 @@ export class AuthFormComponent{
     }
   }
 
+  createVaccineForm(): FormGroup {
+    return this.formBuilder.group({
+      vaccineId: ['', Validators.required],
+      dateTaken: ['', Validators.required]
+    });
+  }
+
   createChildForm(): FormGroup {
     return this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       age: ['', [Validators.required, Validators.min(0), Validators.max(18)]],
-      vaccines_taken: [[]] // Array of vaccine IDs
+      vaccines_taken: this.formBuilder.array([])
     });
   }
 
@@ -94,9 +111,25 @@ export class AuthFormComponent{
     this.addChild.emit();
   }
 
-    removeChildForm(index: number): void {
+  removeChildForm(index: number): void {
     if (this.childrenFormArray.length > 1) {
       this.childrenFormArray.removeAt(index);
+    }
+  }
+
+  addVaccineToChild(childIndex: number): void {
+    const vaccinesArray = this.getVaccinesFormArray(childIndex);
+    if (vaccinesArray) {
+      vaccinesArray.push(this.createVaccineForm());
+    } else {
+      console.error('Vaccines FormArray not found for child index:', childIndex);
+    }
+  }
+
+  removeVaccineFromChild(childIndex: number, vaccineIndex: number): void {
+    const vaccinesArray = this.getVaccinesFormArray(childIndex);
+    if (vaccinesArray && vaccinesArray.length > 0) {
+      vaccinesArray.removeAt(vaccineIndex);
     }
   }
 
@@ -190,6 +223,20 @@ export class AuthFormComponent{
     }
     if (errors['max']) {
       return `Age must be at most ${errors['max'].max}`;
+    }
+    
+    return 'Invalid input';
+  }
+
+  getVaccineErrorMessage(childIndex: number, vaccineIndex: number, controlName: string): string {
+    const vaccineForm = this.getVaccineForm(childIndex, vaccineIndex);
+    const control = vaccineForm.get(controlName);
+    if (!control || !control.errors || !control.touched) return '';
+
+    const errors = control.errors;
+    
+    if (errors['required']) {
+      return 'This field is required';
     }
     
     return 'Invalid input';

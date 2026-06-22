@@ -1,14 +1,18 @@
 import { Vaccine } from "../vaccine/vaccine.model";
 
+export interface VaccineTaken {
+  vaccineId: string;
+  dateTaken: string;
+}
 export interface Child {
   id: string;
   age: number;
   name: string;
-  vaccines_taken: Vaccine[];
+  vaccines_taken: VaccineTaken[];
 }
 
 export interface ChildForm {
   name: string;
   age: number;
-  vaccines_taken: string[]; // Array of vaccine IDs
+  vaccines_taken: VaccineTaken[];
 }

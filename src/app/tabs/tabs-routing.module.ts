@@ -22,8 +22,8 @@ const routes: Routes = [
         data: { authGuardPipe: redirectUnauthorizedToLogin },
       },
       {
-        path: 'tab3',
-        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
+        path: 'child-vaccines',
+        loadChildren: () => import('../child-vaccines/child-vaccines.module').then(m => m.ChildVaccinesPageModule)
       },
       {
         path: '',
