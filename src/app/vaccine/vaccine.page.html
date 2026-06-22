@@ -1,17 +1,33 @@
-<ion-header [translucent]="true">
+<ion-content>
   <ion-toolbar>
     <ion-title>
-      Tab 2
+      Vaccine
     </ion-title>
   </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <div class="ion-padding">
+    @if (vaccineList$ | async; as vaccineList) {
+    <ion-list>
+      @for(vaccine of vaccineList; track vaccine) {
+      <ion-item tappable routerLink="/tabs/vaccine/{{ vaccine.id }}">
+        <ion-label>
+          <h2>{{ vaccine.name || 'Unnamed Vaccine'}}</h2>
+          @if (vaccine.description) {
+            <p>Description: <strong>${{vaccine.description}}</strong></p>
+          }
+          @if (vaccine.date) {
+            <p>Date: <strong>{{vaccine.date | date }}</strong></p>
+          }
+          @if (vaccine.age_group && vaccine.age_group.length >= 1) {
+            <p>For age groups between {{vaccine.age_group[0]}} and {{vaccine.age_group[1]}}</p>
+          }
+        </ion-label>
+      </ion-item>
+      }
+    </ion-list>
+    } @else {
+    <ion-text>
+      <p>No vaccines available</p>
+    </ion-text>
+  }
+</div>
 </ion-content>

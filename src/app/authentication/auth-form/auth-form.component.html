@@ -1,4 +1,15 @@
 <form [formGroup]="authForm">
+  @if(isSignupPage()) {
+  <ion-input
+    formControlName="name"
+    type="text"
+    placeholder="Your name"
+    label="Name:"
+    fill="outline"
+    helper-text="Please enter your name"
+  />
+  }
+
   <ion-input
     formControlName="email"
     type="email"
@@ -19,7 +30,87 @@
   />
   }
 
-  <ion-button (click)="submitCredentials(authForm)" expand="block" [disabled]="!authForm.valid">
+  @if(isSignupPage()) {
+  <div class="children-section">
+    <ion-item lines="none">
+      <ion-label class="ion-text-wrap">
+        <h2>Children Information</h2>
+        <p>Add information about your children</p>
+      </ion-label>
+      <ion-button slot="end" (click)="addChildForm()" fill="clear" color="primary">
+        <ion-icon name="add-circle-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    <div class="children-list">
+      @for(childForm of childrenFormArray.controls; track trackByIndex($index); let i = $index) {
+      <div class="child-form-container" [formGroup]="getChildForm(i)">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>
+              Child {{ i + 1 }}
+              @if(childrenFormArray.length > 1) {
+              <ion-button (click)="removeChildForm(i)" fill="clear" color="danger" slot="end">
+                <ion-icon name="close-circle-outline"></ion-icon>
+              </ion-button>
+              }
+            </ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-input
+              formControlName="name"
+              type="text"
+              placeholder="Child's full name"
+              label="Child's Name:"
+              fill="outline"
+              helper-text="Please enter the child's full name"
+              [errorText]="getChildErrorMessage(i, 'name')"
+            />
+
+            <ion-input
+              formControlName="age"
+              type="number"
+              placeholder="Child's age"
+              label="Age:"
+              fill="outline"
+              helper-text="Please enter the child's age"
+              [errorText]="getChildErrorMessage(i, 'age')"
+            />
+
+            <ion-item>
+              <ion-label>Vaccines Taken</ion-label>
+              <ion-select
+                formControlName="vaccines_taken"
+                multiple="true"
+                placeholder="Select vaccines"
+                interface="popover"
+              >
+              @if (availableVaccines() | async; as vaccines) {
+                @for(vaccine of vaccines; track vaccine.id) {
+                <ion-select-option [value]="vaccine.id">
+                  {{ vaccine.name }}
+                </ion-select-option>
+                }
+              }
+              </ion-select>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </div>
+      }
+    </div>
+  </div>
+  }
+
+
+  <ion-button 
+    (click)="submitCredentials()"
+    type="submit" 
+    expand="block" 
+    [disabled]="!authForm.valid"
+    class="submit-button"
+  >
     {{ actionButtonText() }}
   </ion-button>
 </form>

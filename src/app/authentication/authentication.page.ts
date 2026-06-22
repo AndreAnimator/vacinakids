@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterModule } from '@angular/router';
@@ -13,7 +13,10 @@ import {
 import { AuthFormComponent } from './auth-form/auth-form.component';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 import { AuthenticationService } from './authentication';
-import { tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
+import { Child } from './child.model';
+import { VaccineService } from '../vaccine/vaccine';
+import { Vaccine } from '../vaccine/vaccine.model';
 
 
 @Component({
@@ -42,6 +45,17 @@ import { tap } from 'rxjs';
 export class authenticationPage {
   private readonly router = inject(Router);
   private readonly auth = inject(AuthenticationService);
+  private vaccineService = inject(VaccineService);
+
+  public availableVaccines: Observable<Vaccine[]>;
+  isLoading = true;
+  error: string | null = null;
+
+  constructor(
+  ) {
+    this.availableVaccines = this.vaccineService.getVaccineList();
+    console.log(this.availableVaccines)
+  }
 
   readonly currentPage = this.router.url.split('/')[
     this.router.url.split('/').length - 1
@@ -83,13 +97,13 @@ export class authenticationPage {
   login({ email, password }: UserCredentials) {
     this.auth
     .login(email, password)
-    .pipe(tap(() => this.router.navigateByUrl('')))
+    .pipe(tap(() => this.router.navigateByUrl('/tabs/vaccine')))
     .subscribe();
   }
 
-  signup({ email, password }: UserCredentials) {
+  signup({ email, password, name, sons }: UserCredentials) {
     this.auth
-    .signup(email, password)
+    .signup(email, password, name, sons)
     .pipe(tap(() => this.router.navigateByUrl('')))
     .subscribe();
   }
@@ -97,7 +111,7 @@ export class authenticationPage {
   resetPassword({ email }: UserCredentials) {
     this.auth
     .resetPassword(email)
-    .pipe(tap(() => this.router.navigateByUrl('auth/login')))
+    .pipe(tap(() => this.router.navigateByUrl('/tabs/authentication/login')))
     .subscribe();
   }
 
@@ -107,6 +121,8 @@ export class authenticationPage {
 }
 
 export interface UserCredentials {
+  name: string;
   email: string;
   password: string;
+  sons: Child[];
 }

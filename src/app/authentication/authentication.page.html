@@ -13,6 +13,8 @@
     (formSubmitted)="handleUserCredentials($event)"
     [actionButtonText]="actionButtonText"
     [isPasswordResetPage]="currentPage === 'reset'"
+    [isSignupPage]="currentPage === 'signup'"
+    [availableVaccines]="availableVaccines"
   ></app-auth-form>
   @if (currentPage !== 'signup') {
   <ion-button expand="block" fill="clear" routerLink="/tabs/authentication/signup">
